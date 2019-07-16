@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed; 
+        }
+      
+        td, th {
+            border: 1px solid #dddddd;
+            padding: 8px;  
+        }
+
+        .form-bottom{
+            text-align: center;
+        }
+
+        .form-bottom td{
+            cursor: pointer;
+        }
+        
+        .form {
+            width: 30%;
+            margin-left: 35%;
+            margin-top: 15%;
+            text-align: left;
+        }
+
+        .form th{
+            padding-left: 6%;
+        }
+
+        .input-box input[type="text"],.input-box input[type="password"]{
+            display: block;
+            margin: 5%;
+            width: 90%;
+        }
+
+        .input-box label{
+            margin-left :5%;
+            margin-bottom: 2%;
+            margin-right: 2%;
+        }
+
+        .input-box button{
+            margin-top: 5%;
+            width: 30%;
+            margin-left: 35%;
+            margin-bottom: 3%;
+            padding: 2%;
+            display: block;
+        }
+
+        .input-box label{
+            text-align: left;
+            display: inline-block;
+        }
+
+        .login {
+            display: block;
+        }
+
+        .register {
+            display: none;
+        }
+
+        .hide {
+            display: none;
+            opacity: 0;
+            transition: opacity 2s display 2s linear;
+        }
+
+        .show {
+            display: block;
+            opacity: 1;
+            transition: opacity 2s display 2s linear;
+        }
+        </style>
+
+    </head>
+    <body>
+        <div class="form">
+            <table>
+                <thead>
+                    <th colspan="2">
+                        <span class="login">LOGIN</span>
+                        <span class="register">REGISTER</span>
+                    </th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">
+                            <form class="login input-box" action="login_form.php" method="POST" onsubmit="return false;">
+                                <input type="text" name="email" placeholder="Email Address">
+                                <input type="password" name="password" placeholder="Password">
+                                <button type="submit">Login</button>
+                            </form>
+                            <form class="register input-box" action="register_form.php" method="POST" onsubmit="return false;">
+                                <input type="text" name="username" placeholder="Username">
+                                <input type="text" name="email" placeholder="Email Address">
+                                <input type="password" name="password" placeholder="Password">
+                                <input type="password" name="confirm" placeholder="Confirm Password">
+                                <label>Favorite Color</label>
+                                <input type="color" name="color" placeholder="pick a color"><br>
+                                <label>Sex</label>
+                                <input type="radio" name="sex" value="1" group="1">Male
+                                <input type="radio" name="sex" value="2" group="1">Female
+                                <input type="radio" name="sex" value="3" group="1">LGBT
+                                <button type="submit">Register</button>
+                            </form>    
+                        </td>
+                    </tr>
+                    <tr class="form-bottom">
+                        <td class="login-page" onclick="show_login()">LOGIN</td>
+                        <td class="register-page" onclick="show_register()">REGISTER</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+    <script>
+        function show_login(){
+            var login = document.getElementsByClassName('login');
+            var register = document.getElementsByClassName('register');
+            for(var i=0; i<login.length; i++){
+                // login[i].style.display = "block";
+                // register[i].style.display = "none";
+                login[i].classList.toggle("show");
+                register[i].classList.toggle("hide");
+            }
+            
+        }
+        function show_register(){
+            var login = document.getElementsByClassName('login');
+            var register = document.getElementsByClassName('register');
+            for(var i=0; i<login.length; i++){
+                // login[i].style.display = "none";
+                // register[i].style.display = "block";
+                login[i].classList.toggle("hide");
+                register[i].classList.toggle("show");
+            }
+        }
+    </script>
+</html>
