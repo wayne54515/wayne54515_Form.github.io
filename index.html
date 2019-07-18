@@ -23,15 +23,21 @@
         .nav-bar{
             display: inline-block;
             width: 100%;
+            /* margin-bottom: 1%; */
             /* background-color: aquamarine; */
         }
         
-        .nav-bar span{
-            float: right;
-            margin: 1%;
-            position: relative;
-            font-size: 20px;
+        .button{
             cursor: pointer;
+        }
+        .nav-bar div{
+            /* float: right; */
+            margin: 1%;
+            position: fixed;
+            right: 3%;
+            width: auto;
+            height: inherit;
+            font-size: 20px;
         }
       
         td, th {
@@ -127,7 +133,7 @@
         .user{
             width: 50%;
             margin-left: 25%;
-            margin-top: 5%;
+            margin-top: 7%;
         }
 
         #form-alert{
@@ -289,12 +295,12 @@
         function logListener () {
             var result = this.responseText;
         //  console.log(result);
-            if(result == 'success'){
+            if(toString(result) == toString('success')){
                 close_login_page();
                 console.log(result);
                 document.getElementById("has-login").classList.replace("hide", "show");
                 document.getElementById("not-login").classList.replace("show", "hide");
-                document.getElementById("welcome").innerHTML("Welcome");
+                document.getElementById("welcome").innerHTML = "Welcome";
             }
             else{
                 // close_login_page();
