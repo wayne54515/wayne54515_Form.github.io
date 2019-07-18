@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
         <style>
         body{
             padding: 0px;
@@ -19,9 +21,15 @@
         }
 
         .nav-bar{
+            display: inline-block;
+            width: 100%;
+            /* background-color: aquamarine; */
+        }
+        
+        .nav-bar span{
             float: right;
             margin: 1%;
-            /* position: relative; */
+            position: relative;
             font-size: 20px;
             cursor: pointer;
         }
@@ -115,10 +123,20 @@
             overflow: hidden;
             cursor: pointer;
         }
+
+        .user{
+            width: 50%;
+            margin-left: 25%;
+            margin-top: 5%;
+        }
+
+        #form-alert{
+            text-align: center;
+        }
         </style>
 
     </head>
-    <body>
+    <body onload="getUserData()">
         <div class="nav-bar">
             <span onclick="show_login_page()">LOGIN / REGISTER</span>
         </div>
@@ -135,13 +153,14 @@
                     <tbody>
                         <tr>
                             <td colspan="2">
-                                <form class="login input-box show" action="login_form.php" method="POST"  target="id_iframe">
+                                <form class="login input-box show" method="POST" target="id_iframe" name="login-form">
+                                        <!-- action="login_form.php" method="POST"  target="id_iframe" -->
                                     <input type="text" name="email" placeholder="Email Address">
                                     <input type="password" name="password" placeholder="Password">
-                                    <button type="submit">Login</button>
+                                    <button type="submit" onclick="getResult('login_form.php', 'login-form')">Login</button>
                                 </form>
-                                <form class="register input-box hide" action="register_form.php" method="POST"  target="id_iframe">
-                                        <!-- onsubmit="return false;" -->
+                                <form class="register input-box hide" method="POST" target="id_iframe" name="register-form">
+                                        <!-- action="register_form.php" method="POST"  target="id_iframe" -->
                                     <input type="text" name="name" placeholder="Username">
                                     <input type="email" name="email" placeholder="Email Address">
                                     <input type="password" name="password" placeholder="Password">
@@ -152,7 +171,8 @@
                                     <input type="radio" name="sex" value="male" group="1" checked>Male
                                     <input type="radio" name="sex" value="female" group="1">Female
                                     <input type="radio" name="sex" value="LGBT" group="1">LGBT
-                                    <button type="submit">Register</button>
+                                    <button type="submit" onclick="getResult('register_form.php', 'register-form')">Register</button>
+                                    <!--  onclick="getResult('register_form.php')" -->
                                 </form> 
                                 <p id="form-alert"></p>  
                             </td>
@@ -165,13 +185,31 @@
                 </table>
             </div>
         </div>
-
-
         <iframe id="id_iframe" name="id_iframe" style="display:none;"></iframe>
+        
+        <div class="user">
+            <table>
+                <thead>
+                    <th>名字</th>
+                    <th>信箱</th>
+                    <th>性別</th>
+                </thead>
+                <tbody id="user-table">
+
+                </tbody>
+
+            </table>
+        </div>
+        
+        <!-- <p id="form-alert"></p> -->
+        
     </body>
     <script>
-        var state = "login";
         
+        var state = "login";
+        var result;
+        var php_file;
+
         function show_login(){
             var login = document.getElementsByClassName('login');
             var register = document.getElementsByClassName('register');
@@ -207,6 +245,43 @@
         function close_login_page(){
             var form = document.getElementsByClassName('form-mask')[0];
             form.classList.replace("show", "hide");
+        }
+
+        function getResult(php_file, form_name){
+            var form = document.forms.namedItem(form_name);
+            var oReq = new XMLHttpRequest();
+            oReq.addEventListener("load", reqListener);
+            oReq.open("POST", php_file, true);
+            oReq.send(new FormData(form));
+        }
+
+        function reqListener () {
+           result = this.responseText;
+        //    console.log(result);
+           if(result == "success"){
+               close_login_page();
+               getUserData();
+           }
+           else{
+               var alert = document.getElementById("form-alert");
+               alert.innerHTML = result;
+           }
+        }
+
+        function getUserData(){
+            var oReq = new XMLHttpRequest();
+            oReq.addEventListener("load", userListener);
+            oReq.open("GET", "get_user.php", true);
+            oReq.send();
+
+        }
+
+        function userListener () {
+            result = this.responseText;
+            if(result != "no data"){
+               var user_table = document.getElementById("user-table");
+               user_table.innerHTML = result;
+            }
         }
     </script>
 </html>
