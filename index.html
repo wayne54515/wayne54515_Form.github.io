@@ -2,6 +2,10 @@
 <html>
     <head>
         <style>
+        body{
+            padding: 0px;
+        }
+
         table {
             font-family: arial, sans-serif;
             border-collapse: collapse;
@@ -9,6 +13,22 @@
             table-layout: fixed; 
         }
 
+        a {
+            text-decoration:none;
+            color:black;
+        }
+
+        .nav-bar{
+            float: right;
+            margin: 1%;
+            /* position: relative; */
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .nav-bar span{
+            
+        }
       
         td, th {
             border: 1px solid #dddddd;
@@ -26,8 +46,23 @@
         .form {
             width: 30%;
             margin-left: 35%;
-            margin-top: 15%;
+            margin-top: 10%;
             text-align: left;
+            position: absolute;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        .form-mask{
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.747);
+            /* display: table; */
+            transition: opacity .3s ease;
         }
 
         .form th{
@@ -78,58 +113,73 @@
             opacity: 1;
             transition: all 0.5s linear;
         }
+
+        .close-page{
+            float: right;
+            overflow: hidden;
+            cursor: pointer;
+        }
         </style>
 
     </head>
     <body>
-        <div class="form">
-            <table>
-                <thead>
-                    <th colspan="2">
-                        <span class="login show">LOGIN</span>
-                        <span class="register hide">REGISTER</span>
-                    </th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="2">
-                            <form class="login input-box show" action="login_form.php" method="POST" onsubmit="return false;">
-                                <input type="text" name="email" placeholder="Email Address">
-                                <input type="password" name="password" placeholder="Password">
-                                <button type="submit">Login</button>
-                            </form>
-                            <form class="register input-box hide" action="register_form.php" method="POST" onsubmit="return false;">
-                                <input type="text" name="username" placeholder="Username">
-                                <input type="text" name="email" placeholder="Email Address">
-                                <input type="password" name="password" placeholder="Password">
-                                <input type="password" name="confirm" placeholder="Confirm Password">
-                                <label>Favorite Color</label>
-                                <input type="color" name="color" placeholder="pick a color"><br>
-                                <label>Sex</label>
-                                <input type="radio" name="sex" value="1" group="1">Male
-                                <input type="radio" name="sex" value="2" group="1">Female
-                                <input type="radio" name="sex" value="3" group="1">LGBT
-                                <button type="submit">Register</button>
-                            </form>    
-                        </td>
-                    </tr>
-                    <tr class="form-bottom">
-                        <td class="login-page" onclick="show_login()">LOGIN</td>
-                        <td class="register-page" onclick="show_register()">REGISTER</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="nav-bar">
+            <span onclick="show_login_page()">LOGIN / REGISTER</span>
         </div>
+        <div class="form-mask hide">
+            <div class="form">
+                <table>
+                    <thead>
+                        <th colspan="2">
+                            <span class="login show">LOGIN</span>
+                            <span class="register hide">REGISTER</span>
+                            <span class="close-page" onclick="close_login_page()">X</span>
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="2">
+                                <form class="login input-box show" action="login_form.php" method="POST" >
+                                    <input type="text" name="email" placeholder="Email Address">
+                                    <input type="password" name="password" placeholder="Password">
+                                    <button type="submit">Login</button>
+                                </form>
+                                <form class="register input-box hide" action="register_form.php" method="POST" onsubmit="return false;">
+                                    <input type="text" name="username" placeholder="Username">
+                                    <input type="text" name="email" placeholder="Email Address">
+                                    <input type="password" name="password" placeholder="Password">
+                                    <input type="password" name="confirm" placeholder="Confirm Password">
+                                    <label>Favorite Color :</label>
+                                    <input type="color" name="color" placeholder="pick a color"><br>
+                                    <label>Sex :</label>
+                                    <input type="radio" name="sex" value="1" group="1" checked>Male
+                                    <input type="radio" name="sex" value="2" group="1">Female
+                                    <input type="radio" name="sex" value="3" group="1">LGBT
+                                    <button type="submit">Register</button>
+                                </form> 
+                                <p id="form-alert"></p>  
+                            </td>
+                        </tr>
+                        <tr class="form-bottom">
+                            <td class="login-page" onclick="show_login()">LOGIN</td>
+                            <td class="register-page" onclick="show_register()">REGISTER</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
     </body>
     <script>
         var state = "login";
+        
         function show_login(){
             var login = document.getElementsByClassName('login');
             var register = document.getElementsByClassName('register');
             if(state == "register"){
                 for(var i=0; i<login.length; i++){
-                    // login[i].style.display = "block";
-                    // register[i].style.display = "none";
                     login[i].classList.replace("hide", "show");
                     register[i].classList.replace("show", "hide");
                     
@@ -138,19 +188,28 @@
             }
             
         }
+        
         function show_register(){
             var login = document.getElementsByClassName('login');
             var register = document.getElementsByClassName('register');
             if(state == "login"){
                 for(var i=0; i<login.length; i++){
-                    // login[i].style.display = "none";
-                    // register[i].style.display = "block";
                     login[i].classList.replace("show", "hide");
                     register[i].classList.replace("hide", "show");
                     
                 }
                 state = "register";
             }
+        }
+
+        function show_login_page(){
+            var form = document.getElementsByClassName('form-mask')[0];
+            form.classList.replace("hide", "show");
+        }
+
+        function close_login_page(){
+            var form = document.getElementsByClassName('form-mask')[0];
+            form.classList.replace("show", "hide");
         }
     </script>
 </html>
