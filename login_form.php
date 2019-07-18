@@ -13,17 +13,20 @@ $password = $_POST['password'];
 // }
 
 if(($email!=null)&($password!=null)){
-    $sql = "select * from user where email='$email'and password='$password'";
-    $result=mysqli_query($link, $sql);
+    $sql = "select * from user where email='$email'";
+    $result = mysqli_query($link, $sql);
     $row = mysqli_fetch_array($result);
     // print_r ($row);
-    if (empty($row)){
-        echo '信箱未註冊';
+    if (!empty($row)){
+        if($password != $row["password"]){
+            echo "密碼錯誤";
+        }
+        else
+            echo 'success';
+            // print_r ($row['name']);
     }
     else{
-        // $row = mysqli_fetch_array($result);
-        // print_r ($row);
-        echo "success";
+        echo '信箱未註冊';
     }
 }
 else if($email == null){

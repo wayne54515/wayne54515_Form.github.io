@@ -138,7 +138,13 @@
     </head>
     <body onload="getUserData()">
         <div class="nav-bar">
-            <span onclick="show_login_page()">LOGIN / REGISTER</span>
+            <div id="has-login" class="hide">
+                <span id="welcome"></span>
+                <span class="button" onclick="logout()">LOGOUT</span>
+            </div>
+            <div id="not-login" class="show">
+                <span class="button" onclick="show_login_page()">LOGIN / REGISTER</span>
+            </div>
         </div>
         <div class="form-mask hide">
             <div class="form">
@@ -154,13 +160,11 @@
                         <tr>
                             <td colspan="2">
                                 <form class="login input-box show" method="POST" target="id_iframe" name="login-form">
-                                        <!-- action="login_form.php" method="POST"  target="id_iframe" -->
                                     <input type="text" name="email" placeholder="Email Address">
                                     <input type="password" name="password" placeholder="Password">
-                                    <button type="submit" onclick="getResult('login_form.php', 'login-form')">Login</button>
+                                    <button type="submit" onclick="login()">Login</button>
                                 </form>
                                 <form class="register input-box hide" method="POST" target="id_iframe" name="register-form">
-                                        <!-- action="register_form.php" method="POST"  target="id_iframe" -->
                                     <input type="text" name="name" placeholder="Username">
                                     <input type="email" name="email" placeholder="Email Address">
                                     <input type="password" name="password" placeholder="Password">
@@ -171,10 +175,10 @@
                                     <input type="radio" name="sex" value="male" group="1" checked>Male
                                     <input type="radio" name="sex" value="female" group="1">Female
                                     <input type="radio" name="sex" value="LGBT" group="1">LGBT
-                                    <button type="submit" onclick="getResult('register_form.php', 'register-form')">Register</button>
+                                    <button type="submit" onclick="register()">Register</button>
                                     <!--  onclick="getResult('register_form.php')" -->
                                 </form> 
-                                <p id="form-alert"></p>  
+                                <p id="form-alert" class="hide"></p>  
                             </td>
                         </tr>
                         <tr class="form-bottom">
@@ -207,10 +211,9 @@
     <script>
         
         var state = "login";
-        var result;
-        var php_file;
 
         function show_login(){
+            document.getElementById("form-alert").classList.replace("show", "hide")
             var login = document.getElementsByClassName('login');
             var register = document.getElementsByClassName('register');
             if(state == "register"){
@@ -225,6 +228,7 @@
         }
         
         function show_register(){
+            document.getElementById("form-alert").classList.replace("show", "hide")
             var login = document.getElementsByClassName('login');
             var register = document.getElementsByClassName('register');
             if(state == "login"){
@@ -245,27 +249,61 @@
         function close_login_page(){
             var form = document.getElementsByClassName('form-mask')[0];
             form.classList.replace("show", "hide");
+            document.getElementById("form-alert").classList.replace("show", "hide")
         }
 
-        function getResult(php_file, form_name){
-            var form = document.forms.namedItem(form_name);
+        function register(){
+            var form = document.forms.namedItem("register-form");
             var oReq = new XMLHttpRequest();
-            oReq.addEventListener("load", reqListener);
-            oReq.open("POST", php_file, true);
-            oReq.send(new FormData(form));
+            var form_data = new FormData(form);
+            oReq.addEventListener("load", regListener);
+            oReq.open("POST", "register_form.php", true);
+            oReq.send(form_data);
+            // oReq.removeEventListener("load", regListener)
         }
 
-        function reqListener () {
-           result = this.responseText;
+        function login(){
+            var form = document.forms.namedItem("login-form");
+            var oReq = new XMLHttpRequest();
+            var form_data = new FormData(form);
+            oReq.addEventListener("load", logListener);
+            oReq.open("POST", "login_form.php", true);
+            oReq.send(form_data);
+            // oReq.removeEventListener("load", logListener)
+        }
+
+        function regListener () {
+            var result = this.responseText;
         //    console.log(result);
-           if(result == "success"){
-               close_login_page();
-               getUserData();
-           }
-           else{
-               var alert = document.getElementById("form-alert");
-               alert.innerHTML = result;
-           }
+            if(result == "success"){
+                close_login_page();
+                getUserData();
+            }
+            else{
+                document.getElementById("form-alert").classList.replace("hide", "show")
+                var alert = document.getElementById("form-alert");
+                alert.innerHTML = result;
+            }
+        }
+
+        function logListener () {
+            var result = this.responseText;
+        //  console.log(result);
+            if(result == 'success'){
+                close_login_page();
+                console.log(result);
+                document.getElementById("has-login").classList.replace("hide", "show");
+                document.getElementById("not-login").classList.replace("show", "hide");
+                document.getElementById("welcome").innerHTML("Welcome");
+            }
+            else{
+                // close_login_page();
+                document.getElementById("form-alert").classList.replace("hide", "show");
+                var alert = document.getElementById("form-alert");
+                alert.innerHTML = result;
+                // console.log("wrong way");
+                
+            }
         }
 
         function getUserData(){
@@ -273,15 +311,21 @@
             oReq.addEventListener("load", userListener);
             oReq.open("GET", "get_user.php", true);
             oReq.send();
+            // oReq.removeEventListener("load", userListener)
 
         }
 
         function userListener () {
-            result = this.responseText;
+            var result = this.responseText;
             if(result != "no data"){
                var user_table = document.getElementById("user-table");
                user_table.innerHTML = result;
             }
+        }
+
+        function logout(){
+            document.getElementById("has-login").classList.replace("show", "hide");
+            document.getElementById("not-login").classList.replace("hide", "show");
         }
     </script>
 </html>
